@@ -1,0 +1,31 @@
+.year-view {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 20px;
+  background: #fff;
+}
+
+.year-month {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.year-month h4 {
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+}
+.year-month {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 10px;
+  transition: 0.2s;
+}
+
+.year-month:hover {
+  background: #e8f0fe;
+}
