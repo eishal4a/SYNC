@@ -198,13 +198,29 @@ const handleDeleteEvent = async () => {
 
   return (
     <div className="calendar-wrapper">
-      <header className="header">
-        <div className="header-left">
-          <img src="https://www.gstatic.com/images/branding/product/1x/calendar_48dp.png" alt="Logo" className="logo" />
-          <h1>Calendar</h1>
-        </div>
-        <div className="header-right">{user && <img src={user.picture} alt={user.name} className="profile-img" />}</div>
-      </header>
+     <header className="header">
+  <div className="header-left">
+    <img
+      src="https://www.gstatic.com/images/branding/product/1x/calendar_48dp.png"
+      alt="Logo"
+      className="logo"
+    />
+    <h1>Calendar</h1>
+  </div>
+  <div className="header-right">
+    {user ? (
+      <img src={user.picture} alt={user.name} className="profile-img" />
+    ) : (
+      <button
+        className="google-btn"
+        onClick={() => (window.location.href = `${BACKEND}/api/auth/google`)}
+      >
+        Connect Google Calendar
+      </button>
+    )}
+  </div>
+</header>
+
 
       <div className="content">
         <aside className="sidebar">
