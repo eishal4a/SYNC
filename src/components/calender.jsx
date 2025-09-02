@@ -7,7 +7,11 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-calendar/dist/Calendar.css";
 import { io } from "socket.io-client";
 import "./calender.css";
+import { io } from "socket.io-client";
 
+const socket = io("https://26e2b6f8-4ec3-4832-ae51-db31c1a5b1bc-00-141z0r56gosoi.sisko.replit.dev", {
+  transports: ["websocket", "polling"]
+});
 const localizer = momentLocalizer(moment);
 const BACKEND = "https://26e2b6f8-4ec3-4832-ae51-db31c1a5b1bc-00-141z0r56gosoi.sisko.replit.dev";
 
