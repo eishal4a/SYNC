@@ -50,7 +50,7 @@ useEffect(() => {
   }
 }, []);
 
-// ✅ define fetchEvents once
+
 const fetchEvents = async () => {
   try {
     const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
@@ -69,22 +69,44 @@ const fetchEvents = async () => {
   }
 };
 
-// fetch events when accessToken changes
-useEffect(() => {
-  fetchEvents();
-}, [accessToken]);
 
-// socket.io real-time updates
+// Socket.io for push updates
 useEffect(() => {
+  if (!accessToken) return;
+
   const socket = io(BACKEND);
 
   socket.on("calendarUpdate", () => {
-    console.log("🔔 Calendar updated → refetching events...");
-    fetchEvents();
+    console.log("🔔 Calendar updated → fetching events via push");
+    fetchEvents(); // fetch only when Google tells us
   });
 
   return () => socket.disconnect();
+}, [accessToken]);
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("access_token");
+  const userInfo = params.get("user");
+
+  if (token && userInfo) {
+    const userObj = JSON.parse(decodeURIComponent(userInfo));
+    setAccessToken(token);
+    setUser(userObj);
+    localStorage.setItem("accessToken", token);
+    localStorage.setItem("user", JSON.stringify(userObj));
+
+    // Clean the URL so parameters disappear
+    window.history.replaceState({}, document.title, "/");
+  } else {
+    const storedToken = localStorage.getItem("accessToken");
+    const storedUser = localStorage.getItem("user");
+    if (storedToken && storedUser) {
+      setAccessToken(storedToken);
+      setUser(JSON.parse(storedUser));
+    }
+  }
 }, []);
+
 
   const handleSelectSlot = (slot) => {
     setSelectedSlot(slot);
@@ -133,8 +155,7 @@ const handleDeleteEvent = async () => {
     const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
     await axios.delete(`${BACKEND}/api/events/${form._id}`, { headers });
 
-    // Remove locally and refresh
-    fetchEvents(); // refresh all events after delete
+    // Let push + socket update the frontend automatically
     setSelectedSlot(null);
     setForm({ _id: "", title: "", description: "", location: "", type: "event", color: "#1a73e8", guests: "" });
   } catch (err) {
@@ -142,8 +163,6 @@ const handleDeleteEvent = async () => {
   }
 };
 
-// Add a refresh button somewhere in your JSX
-<button className="refresh-btn" onClick={fetchEvents}>🔄 Refresh</button>
 
 
 
